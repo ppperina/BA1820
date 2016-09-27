@@ -1,0 +1,444 @@
+---
+title: "Session 7"
+author: "Antoine Vernet"
+date: ''
+output:
+  ioslides_presentation:
+    style: style.css
+  beamer_presentation:
+    slide_level: 2
+subtitle: Tests | Regression
+---
+
+
+```{r library, echo = FALSE}
+library(ggplot2)
+```
+
+```{r setup, cache=FALSE, include=FALSE}
+library(knitr)
+output <- opts_knit$get("rmarkdown.pandoc.to")
+if (output=="html"){out_format <- "html"}
+if (output=="beamer"){out_format <- "latex"}
+```
+
+## Lesson plan
+
+Today we will cover:
+
+- More tests
+- Introduction to regression
+- Statistical traps
+
+But first:
+
+- Monty Hall
+
+
+## Monty Hall problem
+
+The problem is the following:
+
+- Your are playing in a TV game show. There are 3 doors. 
+- Behind two of those doors there is a goat, behing the third door there is a prize.
+- The host asks you to pick a door. 
+- Once you have done so, the host chooses one of the remaining doors and opens it to reveal a goat. 
+- Before opening your door, he offers you the chance to switch door.
+
+Should you switch?
+
+
+# Statistical Tests
+
+## Test of means | Review
+
+The t-test allows you to test differences between the mean of a sample and a theoretical value, or to test the mean of two different samples.
+
+```{r, echo = TRUE}
+set.seed(786); y_1 <- rnorm(1000, mean = 2, sd = 5)
+y_2 <- rnorm(1000, mean = 2, sd = 5)
+```
+## One sample t-test
+
+```{r, echo = TRUE}
+# One sample
+t.test(y_1, alternative = "two.sided", mu = 5)
+
+```
+
+## Two sample t-test
+
+```{r, echo = TRUE}
+#Two sample
+t.test(y_1, y_2, alternative = "two.sided")
+```
+
+## Test of variance
+
+The test of variance, known as the F-test, allows you to compare the variance in two samples.
+
+```{r, echo = TRUE}
+var.test(y_1, y_2, alternative = "two.sided")
+
+```
+
+## Test for categorical variables
+
+The $\chi^2$-test can be used on contingency table and therefore be applied to study the differences in distribution of categorical variables.
+
+Let's consider the following, in a several classrooms, everyone gets to choose between cooking and baking classes. In classroom 1, 30 students, 20 choose baking and 10 choose cooking. In the second classroom, of the 25 students, 16 choose cooking and 9 choose baking. In the third classroom, the distribution is 15 and 15.
+
+Are the distribution of activities across the different classrooms the same?
+
+
+```{r, echo = TRUE}
+dist <- matrix(data = c(20, 10, 16, 9, 15, 15), 
+               byrow = TRUE, nrow = 2)
+```
+
+## $\chi^2$
+
+```{r, echo = TRUE}
+chisq.test(dist)
+```
+
+# Regression
+
+## What is regression
+
+Regression is a framework to study the relationships between a set of variables called the _independent variables_ and another variable called the _dependent variable_.
+
+In the simplest of cases, the set of independent variables only contains one variable and regression is the study of the relationship between 2 variables (say, $x$ and $y$). 
+
+## Simple use case
+
+In social science, we very often find ourselves in the following situation:
+
+- We have a set of measurement on a population (i.e. age, height, etc.)
+- We would like to understand how one of those measurement vary with change in other measurements
+- For example, is weight a function of height? Or wage a function of education?
+
+In regression, we will write down models that represent the relationships between the different variables.
+
+## Challenges
+
+- Relationships between variables are never going to be perfect (in the real world), we need to allow for other factors to affect $y$
+- What is the functional relationship between $x$ and $y$?
+- How can we ensure that we capture relationship between $x$ and $y$, all else being equal (_ceteris paribus_).
+
+
+## The simple linear regression model
+
+A simple linear regression model takes the form:
+
+$$
+y = \beta_0 + \beta_1 x + u
+$$
+Where $y$ is the dependent variable, $x$ is the independent variable, $\beta_0$ is the intercept, $\beta_1$ is the coefficient of $x$ and $u$ is an error term.
+
+## Error term
+
+$u$ represents other factors that $x$ that influences $y$. If those other factors are held constant, then $x$ has a linear effect on $y$:
+
+$$
+\Delta y = \beta_1 \Delta x
+$$
+
+## Example
+
+Think about the relationship of a persons' wage to education. We could write the following model:
+
+$$
+wage = \beta_0 + \beta_1 education + u
+$$
+If $wage$ is measured in dollars per hour and $education$ in years, then $\beta_1$ measure the change in hourly wage given another year of education, everything else held constant.
+
+## Assumption of this simple model
+
+- The relation between $y$ and $x$ is constant for every level of $x$. 
+
+This is not always realistic.
+We will see how we can address this limitation within the framework of linear models.
+
+## Assumptions of the model
+
+- $E(u) = 0$
+- $E(u | x) = E(u)$
+
+Those two assumptions can be combined : $E(u | x) = 0$, this allows us to write:
+
+$$
+E(x | y) = \beta_0 + \beta_1 x
+$$
+It is sometimes referred to as the __population regression function__ and means that a 1 unit increase in $x$ translates into an increase of $\beta_1$ in $E(y)$
+
+## Parameter estimation
+
+We need to determine the value of $\beta_0$ and $\beta_1$. 
+
+Because $E(u | x) = E(u)$ and $E(u) = 0$, we can write $\mathrm{Cov}(x, u) = E(x u) = 0$, then we can write:
+$$
+\begin{aligned}
+&E(y - \beta_0 - \beta_1 x) = 0 \\
+&E[x(y - \beta_0 - \beta_1 x)] = 0
+\end{aligned}
+$$
+
+## Parameter estimation
+
+Given a sample, we can write the following system of equations:
+
+$$
+\begin{aligned}
+n^{-1} \sum_{i = 1}^n{(y_i - \hat{\beta_0} - \hat{\beta_1} x_i)} = 0 \\
+n^{-1} \sum_{i = 1}^n{x (y_i - \hat{\beta_0} - \hat{\beta_1} x_i)} = 0
+\end{aligned}
+$$
+
+These equations can be solved for $\hat{\beta_0}$ and $\hat{\beta_1}$.
+
+## Parameter estimation
+
+The previous two equation can be rewritten:
+
+$$
+\begin{aligned}
+&\overline{y} = \hat{\beta_0} + \hat{\beta_1} \overline{x} \\
+&\hat{\beta_0} = \overline{y} - \hat{\beta_1} \overline{x}
+\end{aligned}
+$$
+
+This means that once we know $\hat{\beta_1}$ the estimate of the slope, it is easy to get $\hat{\beta_0}$ the estimate of the intercept
+
+## Parameter estimation
+
+If we replace in the second equation now, we obtain:
+
+$$
+\begin{aligned}
+\sum_{i = 1}^n{x_1[y_1 - (\overline{y} - \hat{\beta_1} \overline{x}) - \hat{\beta_1} x_i]}
+\end{aligned}
+$$
+
+We are dropping $n^{-1}$ because it does not affect the solution.
+
+Using the properties of summation:
+$$
+\begin{aligned}
+\sum_{i = 1}^n{x_i (x_i - \overline{x})} = \sum_{i = 1}^n{ (x_i - \overline{x})^2 } \\
+\sum_{i = 1}^n{x_i (y_i - \overline{y})} = \sum_{i = 1}^n{ (x_i - \overline{x}) (y_i - \overline{y}) }
+\end{aligned}
+$$
+
+## 
+
+Provided that $\sum_{i = 1}^n{(x_i - \overline{x})^2} > 0$, the estimated slope is:
+
+$$
+\beta_1 = \frac{\sum_{i = 1}^n {(x_i - \overline{x}) (y_i - \overline{y})}}{\sum_{i = 1}^n {(x_i - \overline{x}) ^2}}
+$$
+
+This is the sample covariance between $x_i$ and $y_i$ divided by the sample variance of $x_i$. 
+This can be rewritten as:
+
+$$
+\hat{\beta_1} = \rho_{xy} (\frac{\hat{\sigma_x}}{\hat{\sigma_y}})
+$$
+where $\rho_{xy}$ is the correlation between $x$ and $y$.
+
+## Limitations
+
+Because the simple regression model is just a scaled version of the correlation coefficient, we should be very careful in inferring causality when we do not have experimental data.
+
+## Illustration
+
+```{r, echo = FALSE, out.width = '50%', fig.retina = NULL, fig.align = 'center'}
+knitr::include_graphics('img/Linear_regression.png')
+```
+
+
+## Regression example
+
+The salary dataset contains information about salaries of faculty members in a small US college. 
+The six variables in this dataframe are:
+
+
+|Variable| Description|
+|--------|------------|
+|sx| gender|
+|rk| rank, assistant, associate or full professor|
+|yr| number of years in the current rank|
+|dg| Highest degree, doctorate or masters|
+|yd| Number of years since the degree was earned|
+|sl| Academic year salary, in dollars|
+
+## Loading the data
+
+
+```{r, echo = TRUE}
+sal <- read.table("./data/salary.dat", header = TRUE)
+```
+
+## Example
+
+Does the salary depends on experience (years since the degree was earned)?
+
+```{r, echo = TRUE, eval = FALSE}
+m1 <- lm(sl ~ yd, data = sal)
+summary(m1, digits = 2)
+```
+
+## Result
+
+```{r, echo = FALSE}
+m1 <- lm(sl ~ yd, data = sal)
+summary(m1, digits = 2)
+```
+
+## Visual result
+
+```{r, echo = FALSE}
+library(ggplot2)
+ggplot(data = sal, aes(x = yd, y = sl)) + geom_point() + geom_smooth(method='lm',formula=y~x)
+```
+
+## Multiple regression
+
+Multiple regression is a generalisation of simple regression for more than one independent variable.
+
+We use several variables to study how the dependent variable change based on several independent variables. In this case, the coefficient of $x_i$ on of the dependent variable is the effect of $x_i$ on $y$ when the other variables $\{x_2, ..., x_n\}$ are held constant.
+
+In addition, one can use both continuous variables and discrete variables as independent variables.
+
+## Example
+
+It is possible that salaries of academics do not only depends on year of experience, but also on their rank.
+
+```{r, echo = TRUE}
+m2 <- lm(sl ~ yd + rk, data = sal)
+```
+
+## 
+
+```{r, echo = FALSE}
+m2 <- lm(sl ~ yd + rk, data = sal)
+summary(m2)
+```
+
+## Multiple models
+
+Several packages allow you to produce tables that are well formatted. Two examples are `texreg` and `stargazer`, they both produce output in either latex, html or plain text.
+
+
+```{r, echo = TRUE, results = "asis", message = FALSE, eval = FALSE}
+library(texreg)
+if (out_format == "html"){
+htmlreg(list(m1, m2))
+}else{
+texreg(list(m1, m2))
+}
+```
+
+```{r, echo = TRUE, results = "asis", message = FALSE, eval = FALSE}
+library(stargazer)
+stargazer(list(m1, m2), type = out_format, digits = 2)
+```
+
+## Texreg
+
+```{r, echo = FALSE, results = "asis", message = FALSE}
+library(texreg)
+if (out_format == "html"){
+htmlreg(list(m1, m2), star.symbol = "\\*")
+}else{
+texreg(list(m1, m2))
+}
+```
+
+## Stargazer {.smaller}
+
+```{r, echo = FALSE, results = "asis", message = FALSE}
+library(stargazer)
+stargazer(list(m1, m2), type = out_format, digits = 2, style = "qje", 
+          header = FALSE, font.size = "scriptsize", no.space = TRUE)
+```
+
+## Rank and experience
+
+```{r, echo = FALSE, fig.align = "center"}
+ggplot(data = sal, aes(x = yd, y = sl, color = rk)) + geom_point() + geom_smooth(method='lm',formula = y~ x)
+```
+
+## Exercise
+
+Use the salary data and build a better model of salary.
+
+## Simpson's paradox
+
+The idea behing Simpson's paradox is that when previously omitted variables are added to a model, the association between 2 variables (say $x$ and $y$) that was in one direction can get reversed.
+
+The most famous example of this effect looks at admissions at UC Berkeley. 
+
+## Load the data
+
+```{r, echo = TRUE}
+ucb <- UCBAdmissions
+```
+
+The data present six tables that summarize for a specific department whether female and male applicants where admitted or rejected.
+This data was presented as evidence in a court case that followed a lawsuit against UCB in 1973 for gender discrimination.
+
+The data has observations for `r sum(ucb)` applicants.
+
+
+## Proportions overall
+
+```{r, echo = TRUE, results = "asis"}
+library(xtable)
+aggreg <- apply(UCBAdmissions, c(1, 2), sum)
+print(xtable(prop.table(aggreg, 2)), 
+      type = out_format, comment = FALSE)
+```
+
+## By departments (A and B)
+
+```{r, echo = TRUE, results = "asis"}
+library(xtable)
+print(xtable(prop.table(ucb[, , "A"], 2)), 
+      type = out_format, comment = FALSE)
+print(xtable(prop.table(ucb[, , "B"], 2)), 
+      type = out_format, comment = FALSE)
+
+```
+
+
+## By departments (C and D)
+
+```{r, echo = TRUE, results = "asis"}
+library(xtable)
+print(xtable(prop.table(ucb[, , "C"], 2)), 
+      type = out_format, comment = FALSE)
+print(xtable(prop.table(ucb[, , "D"], 2)), 
+      type = out_format, comment = FALSE)
+
+```
+
+
+## By departments
+
+```{r, echo = TRUE, results = "asis"}
+library(xtable)
+print(xtable(prop.table(ucb[, , "E"], 2)), 
+      type = out_format, comment = FALSE)
+print(xtable(prop.table(ucb[, , "F"], 2)), 
+      type = out_format, comment = FALSE)
+```
+
+## Example of regression
+
+https://gallery.shinyapps.io/simple_regression/
+
+
+# {.flexbox .vcenter}
+
+![](img/fin.png)\
