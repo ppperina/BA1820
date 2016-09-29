@@ -1,0 +1,41 @@
+---
+title: "Exercises week 3"
+author: "Antoine Vernet"
+date: ''
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Exercises 1
+
+The knowing yourself survey asked you to fill 4 different scales.
+Before doing anything, we need to compute the values for the items of each of the scales.
+
+1. First, you need to turn the text of the answers into numeric codes (usually, from 1 for strongly disagree to 5 for strongly agree). 
+
+2. Then some items for question 2 are _reverse_ coded, those are items are the ones numbered 2, 6, 8, 9, 12, 18, 21, 23, 27, 31, 34, 35, 37, 41, 43. Recode them.
+
+3. The first item that we will compute is agreableness and consist of the average of items 7, 17, 22, 24, 32, 2, 12, 27, 37, 42.
+
+4. The second item is extraversion and consist of the average of items 1, 11, 16, 26, 36, 6, 21, 31.
+
+5. The third item is conscientiousness and consist of the average of items 3, 13, 28, 33, 38, 8, 18, 23, 43.
+
+6. The fourth item is neuroticism and consist of the average of items 4, 14, 19, 29, 39, 9, 34.
+
+7. The fifth item is openess to experience and consist of the average of items 5, 10, 15, 20, 25, 30, 35, 40, 41, 44.
+
+8. Once you have calculated those averages, calculate the pairwise correlations between them. Can you explain what is peculiar about those items (try `cor.test`)?
+
+9. Examine the differences between male and female in the class in terms of their scores on those 5 items. You should do both visual examination and hypothesis testing. What do you notice?
+
+
+```{r}
+ky_lab <- read.csv("../data/EQBA1617.csv", nrows = 1)
+
+ky <- read.csv("../data/EQBA1617.csv", skip = 2, header = FALSE)
+names(ky) <- names(ky_lab)
+# Put your code in here
+
+```
