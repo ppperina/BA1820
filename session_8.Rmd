@@ -1,0 +1,272 @@
+---
+title: "Session 8"
+author: "Antoine Vernet"
+date: ''
+output:
+  beamer_presentation:
+    slide_level: 2
+  ioslides_presentation:
+    style: style.css
+subtitle: Regression | Data analysis workflow
+---
+
+
+```{r library, echo = FALSE}
+library(ggplot2)
+```
+
+```{r setup, cache=FALSE, include=FALSE}
+library(knitr)
+output <- opts_knit$get("rmarkdown.pandoc.to")
+if (output=="html"){out_format <- "html"}
+if (output=="beamer"){out_format <- "latex"}
+```
+
+## Lesson plan
+
+Today we will cover:
+
+- Simpson's Paradox
+- Data analysis workflow
+- Some pitfalls of data analysis
+- Exercises
+
+# Correction from Tuesday
+
+
+## Stargazer {.smaller}
+
+```{r, echo = FALSE, results = "asis", message = FALSE}
+library(stargazer)
+sal <- read.table("./data/salary.dat", header = TRUE)
+m1 <- lm(sl ~ yd, data = sal)
+m2 <- lm(sl ~ yd + rk, data = sal)
+stargazer(list(m1, m2), type = out_format, digits = 2, 
+          style = "qje", header = FALSE, 
+          font.size = "tiny", no.space = TRUE)
+```
+
+## Rank and experience
+
+
+```{r, echo = FALSE, fig.align = "center"}
+ggplot(data = sal, aes(x = yd, y = sl, color = rk)) + geom_point() +
+geom_abline(intercept = 17166, slope = 95, color = "red") + 
+geom_abline(intercept = 17166 + 4209, slope = 95, color = "darkgreen") + 
+geom_abline(intercept = 17166 + 10310, slope = 95, color = "blue")
+
+```
+
+## Rank and experience
+
+```{r, echo = FALSE, fig.align = "center"}
+ggplot(data = sal, aes(x = yd, y = sl, color = rk)) + geom_point() + geom_smooth(method='lm',formula = y~ x)
+```
+
+
+## Formula
+
+```{r echo = TRUE, eval = FALSE}
+m3 <- lm(sl ~ yd + rk + yd * rk, data = sal)
+stargazer(list(m1, m2, m3), type = out_format, digits = 2, 
+          style = "qje", header = FALSE, 
+          font.size = "scriptsize", no.space = TRUE)
+```
+
+## Results {.smaller}
+
+```{r echo = FALSE, results = "asis"}
+m3 <- lm(sl ~ yd + rk + yd * rk, data = sal)
+stargazer(list(m1, m2, m3), type = out_format, digits = 2, style = "qje", 
+          header = FALSE, font.size = "tiny", no.space = TRUE)
+```
+
+# Group project
+
+## Group project
+
+With you syndicate group, you will complete a short report on a dataset.
+The report is due on Sunday the 16^th^ of October.
+The report will cover the following:
+
+- Description of the dataset (dimensions, content of each of the variables).
+- Descriptive statistics (univariate descriptive statistics and bivariate).
+- Correlation analyses
+- Hypothesis tests, regression
+- _Above all_: you should tell me something interesting about what is going on in the data.
+
+## Deliverable
+
+- The report is a .Rmd file that compiles either to pdf, html or word.
+- I also want access to the git or bitbucket repository you used during collaboration.
+
+
+## Report structure {.smaller}
+
+- Introduction
+    + What is your theme or research question?
+- Theory
+    + What do you expect to find?
+- Methods
+    + Describe the dataset:
+    + Strengths
+    + Limitations
+- Analysis
+- Discussion
+    + What results did you find?
+    + Why is this interesting?
+    + What would be the next steps?
+
+
+# Simpson's paradox
+
+## Simpson's paradox
+
+The idea behing Simpson's paradox is that when previously omitted variables are added to a model, the association between 2 variables (say $x$ and $y$) that was in one direction can get reversed.
+
+The most famous example of this effect looks at admissions at UC Berkeley. 
+
+## Load the data
+
+```{r, echo = TRUE}
+ucb <- UCBAdmissions
+```
+
+The data present six tables that summarize for a specific department whether female and male applicants where admitted or rejected.
+ 
+This data was presented as evidence in a court case that followed a lawsuit against UCB in 1973 for gender discrimination.
+ 
+The data has observations for `r sum(ucb)` applicants.
+ 
+## Proportions overall
+
+```{r, echo = TRUE, results = "asis"}
+library(xtable)
+aggreg <- apply(UCBAdmissions, c(1, 2), sum)
+print(xtable(prop.table(aggreg, 2)), 
+      type = out_format, comment = FALSE)
+```
+ 
+## By departments (A and B)
+
+```{r, echo = TRUE, results = "asis"}
+
+library(xtable)
+
+print(xtable(prop.table(ucb[, , "A"], 2)), 
+      type = out_format, comment = FALSE)
+print(xtable(prop.table(ucb[, , "B"], 2)), 
+      type = out_format, comment = FALSE)
+```
+
+ 
+## By departments (C and D)
+
+```{r, echo = TRUE, results = "asis"}
+library(xtable)
+print(xtable(prop.table(ucb[, , "C"], 2)), 
+      type = out_format, comment = FALSE)
+print(xtable(prop.table(ucb[, , "D"], 2)), 
+      type = out_format, comment = FALSE)
+```
+
+## By departments
+
+```{r, echo = TRUE, results = "asis"}
+library(xtable)
+
+print(xtable(prop.table(ucb[, , "E"], 2)), 
+      type = out_format, comment = FALSE)
+print(xtable(prop.table(ucb[, , "F"], 2)), 
+      type = out_format, comment = FALSE)
+```
+
+
+
+# Data analysis workflow
+
+## Design
+
+ - What question are we trying to answer?
+ - What data is available?
+ - What type of data collection is desirable (experimental vs. observational)
+ - What is the desired output?
+ 
+
+# {.flexbox .vcenter}
+
+Time spent in design avoids costly errors
+
+# {.flexbox .vcenter}
+
+Flawed design yield useless data
+
+## Data collection
+
+- Trade off between the ideal dataset and cost
+- Just as critical as design
+
+## Data analysis
+
+- Theory informs analysis
+- Theory helps prevents overfitting
+
+The good news with analysis is that provided the design and data are suitable, you can always redo it.
+
+
+## Reporting
+
+- Literate programming helps make your documents easier to reproduce
+- Allows for transparent collaboration
+- What can be automated should be
+
+
+# Stats done wrong
+
+## Statistical power
+
+- Underpowered studies will be unable to detect effects
+- Sample size needs to be determined based on hypothesised size of effects
+- If using observational data: 
+    + be aware of the minimum size of an effect that you can reliably detect
+
+## Truth inflation
+
+- When a study is underpowered, you will only detect an effect when your sample is an outlier, therefore inflating the size of the effect (sometimes this is called type M error).
+
+## False discovery rate
+
+The false discovery rate highlights some of the limitations of relying on $p$-values.
+
+Imagine the following situation:
+
+0.8% of women who get screened for breast cancer have cancer. The test will correctly detect breast cancer in 90% of the women screened. However, it will also falsely detect breast cancer in 5% of women.
+
+- What is the percentage of women who get a positive mammogram and do have breast cancer?
+
+## Results
+
+Suppose we have 1000 women taking a mammogram. About 8 women have cancer (0.8%). If the test has a 90% chance of correctly detecting cancer, about 7 of those women will have a positive mammogram. 
+
+But we also have 992 women who do not have breast cancer and we know that 5% of those women will get a positive result. This is about 49 to 50 women.
+
+This means that we will get about 57 positive results, only 7 of which are true discoveries. The others are false positives.
+
+So only about `r round(7/57*100)`% of women with positive results do have cancer.
+
+## Regression to the mean
+
+Regression to the mean is relevant in the context of multiple measurements of the same subjects. 
+
+For example, imagine that you track performance over time of the 40 best performing players in the English Premiere League. You select the group of players that you will track 5 games into the season.
+
+What do you think is likely to happen to their performance over time?
+
+## (In)significant differences in significance
+
+We have seen that significance levels are somewhat dangerous.
+If you select 5% as your significance cut off, what do you do if you get a p-value of 0.049? What do you do if you get a p-value of 0.051?
+
+# {.flexbox .vcenter}
+
+![](img/fin.png)\
