@@ -55,6 +55,9 @@ Can you build a simple model of the determinants of cost for this dataset? In th
 
 ```{r, echo = TRUE}
 # Your code here
+
+m_ncl <- lm(cost ~ date + pt + cap, data = ncl)
+summary(m_ncl)
 ```
 
 

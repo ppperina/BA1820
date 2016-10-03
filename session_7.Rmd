@@ -168,7 +168,7 @@ We will see how we can address this limitation within the framework of linear mo
 Those two assumptions can be combined : $E(u | x) = 0$, this allows us to write:
 
 $$
-E(x | y) = \beta_0 + \beta_1 x
+E(y | x) = \beta_0 + \beta_1 x
 $$
 It is sometimes referred to as the __population regression function__ and means that a 1 unit increase in $x$ translates into an increase of $\beta_1$ in $E(y)$
 
@@ -242,7 +242,7 @@ This is the sample covariance between $x_i$ and $y_i$ divided by the sample vari
 This can be rewritten as:
 
 $$
-\hat{\beta_1} = \rho_{xy} (\frac{\hat{\sigma_x}}{\hat{\sigma_y}})
+\hat{\beta_1} = \hat{\rho}_{xy} (\frac{\hat{\sigma}_y}{\hat{\sigma}_x})
 $$
 where $\rho_{xy}$ is the correlation between $x$ and $y$.
 
@@ -372,67 +372,6 @@ ggplot(data = sal, aes(x = yd, y = sl, color = rk)) + geom_point() + geom_smooth
 ## Exercise
 
 Use the salary data and build a better model of salary.
-
-## Simpson's paradox
-
-The idea behing Simpson's paradox is that when previously omitted variables are added to a model, the association between 2 variables (say $x$ and $y$) that was in one direction can get reversed.
-
-The most famous example of this effect looks at admissions at UC Berkeley. 
-
-## Load the data
-
-```{r, echo = TRUE}
-ucb <- UCBAdmissions
-```
-
-The data present six tables that summarize for a specific department whether female and male applicants where admitted or rejected.
-This data was presented as evidence in a court case that followed a lawsuit against UCB in 1973 for gender discrimination.
-
-The data has observations for `r sum(ucb)` applicants.
-
-
-## Proportions overall
-
-```{r, echo = TRUE, results = "asis"}
-library(xtable)
-aggreg <- apply(UCBAdmissions, c(1, 2), sum)
-print(xtable(prop.table(aggreg, 2)), 
-      type = out_format, comment = FALSE)
-```
-
-## By departments (A and B)
-
-```{r, echo = TRUE, results = "asis"}
-library(xtable)
-print(xtable(prop.table(ucb[, , "A"], 2)), 
-      type = out_format, comment = FALSE)
-print(xtable(prop.table(ucb[, , "B"], 2)), 
-      type = out_format, comment = FALSE)
-
-```
-
-
-## By departments (C and D)
-
-```{r, echo = TRUE, results = "asis"}
-library(xtable)
-print(xtable(prop.table(ucb[, , "C"], 2)), 
-      type = out_format, comment = FALSE)
-print(xtable(prop.table(ucb[, , "D"], 2)), 
-      type = out_format, comment = FALSE)
-
-```
-
-
-## By departments
-
-```{r, echo = TRUE, results = "asis"}
-library(xtable)
-print(xtable(prop.table(ucb[, , "E"], 2)), 
-      type = out_format, comment = FALSE)
-print(xtable(prop.table(ucb[, , "F"], 2)), 
-      type = out_format, comment = FALSE)
-```
 
 ## Example of regression
 

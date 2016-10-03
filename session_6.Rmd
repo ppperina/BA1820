@@ -3,19 +3,19 @@ title: "Session 6"
 author: "Antoine Vernet"
 date: ''
 output:
-  ioslides_presentation:
-    style: style.css
   beamer_presentation:
     slide_level: 2
-subtitle: Sampling | Hypothesis Testing | Regression
+  ioslides_presentation:
+    style: style.css
+subtitle: Sampling | Hypothesis Testing
 ---
-
 
 ```{r library, echo = FALSE}
 library(ggplot2)
 ```
 
 ## Lesson plan
+
 
 Today we will cover:
 
