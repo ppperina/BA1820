@@ -11,6 +11,8 @@ Louise Fallon Business Analytics 16-17
 
 Yilin Zhu Business Analytics 16-17
 
+Franziska Zerwas Business Analytics 1718
+
 ## Credits
 
 The gif of derivative was contributed by IkamusumeFan, wikipedia.org/wiki/File:Derivative_Gif.gif
