@@ -1,0 +1,25 @@
+---
+title: "Challenges"
+author: "Antoine Vernet"
+date: ''
+output:
+  pdf_document: default
+  html_document: default
+subtitle: Week 1
+---
+
+## Challenge 1: The one with the portfolio
+
+The code in the folder called trading should (with a bit of fiddling around) allow you to download price information for securities traded on the London Stock Exchange.
+
+The challenge is simple: collect data on securities and tell us which securities we should be keeping an eye on and why.
+
+You should provide: 
+
+- code that compute summary variables on securities and 
+- a written rationale as to why the variables you are using are useful to determine which securities to choose to invest in or to avoid
+- both of those should be in an .Rmd file (which compiles).
+
+The TA's and I will look at all the submissions and determine which one wins the challenge for this week.
+
+Good luck!
