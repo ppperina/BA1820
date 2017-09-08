@@ -287,6 +287,17 @@ B
 A %*% B
 ```
 
+## A third example
+
+```{r}
+C <- matrix(data = c(1, 7, 4, 6, 8, 2, 4, 9, 0), nrow = 3, byrow = FALSE)
+
+Transpose
+t(C)
+
+Inverse
+solve(C)
+```
 
 # Systems of equations
 
