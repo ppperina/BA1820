@@ -11,7 +11,9 @@ Louise Fallon Business Analytics 16-17
 
 Yilin Zhu Business Analytics 16-17
 
-Franziska Zerwas Business Analytics 1718
+Franziska Zerwas Business Analytics 17-18
+
+Francis Darby Business Analytics 17-18
 
 ## Credits
 
