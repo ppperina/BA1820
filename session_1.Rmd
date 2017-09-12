@@ -54,6 +54,15 @@ Today we will cover:
 
 You will have covered most of those things during highschool, so you should be pretty familiar with everything.
 
+## Important principles of learning R
+- Don't panic
+
+- Ask for help often
+
+- Give the teaching team frequent feedback on what you're struggling with
+
+- Don't give up, it will get better
+
 ## Definitions
 
 - Algebra: the study of mathematical symbol and the rules to manipulate them
@@ -292,10 +301,10 @@ A %*% B
 ```{r}
 C <- matrix(data = c(1, 7, 4, 6, 8, 2, 4, 9, 0), nrow = 3, byrow = FALSE)
 
-Transpose
+# Transpose
 t(C)
 
-Inverse
+# Inverse
 solve(C)
 ```
 
