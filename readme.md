@@ -1,7 +1,7 @@
 # Statistics for Business Analytics with R
 
 
-This repository contains the material for the Statistics for Business Analytics class in the MSc Business Analytics at Imperial College Business School.
+This repository contains material for the Statistics for Business Analytics class in the MSc Business Analytics at Imperial College Business School.
 
 ## Contributors
 
